@@ -1,0 +1,38 @@
+name: fablemaker
+summary: Introduction to HTML syntax through editing parts of the code
+description: |
+  Pop open the magical pages that offer a new approach to interacting with the beloved Aesop's Fables! Read and touch these time honored stories and then hack the pages to make them your own. The art, sounds and text can all be hacked, creating your unique fables you can share with others.
+version: '1.2'
+base: core22
+architectures:
+- amd64
+confinement: strict
+grade: stable
+
+apps:
+  fablemaker:
+    extensions: [gnome]
+    command: /Fablemaker_v32_Lin/Fablemaker_32.x86_64
+    plugs:
+      - audio-playback
+      - desktop
+      - desktop-legacy
+      - joystick
+      - network
+      - opengl
+      - wayland
+      - x11
+
+parts:
+  fablemaker:
+    source: https://github.com/endless-network/Fablemaker_Binary/releases/download/v1.2/Fablemaker_v32_Lin.zip
+    plugin: dump
+    override-prime: |
+      craftctl default
+      chmod +x $CRAFT_PRIME/Fablemaker_v32_Lin/Fablemaker_32.x86_64
+  desktop-files:
+    plugin: nil
+    source: desktop-file
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/meta/gui
+      cp * $CRAFT_PART_INSTALL/meta/gui
