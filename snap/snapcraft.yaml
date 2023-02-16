@@ -1,8 +1,6 @@
 name: fablemaker
-summary: Introduction to HTML syntax through editing parts of the code
-description: |
-  Pop open the magical pages that offer a new approach to interacting with the beloved Aesop's Fables! Read and touch these time honored stories and then hack the pages to make them your own. The art, sounds and text can all be hacked, creating your unique fables you can share with others.
-version: '1.2'
+adopt-info: fablemaker-source
+summary: Interactive stories where you can customize characters, texts and sounds!
 base: core22
 architectures:
 - amd64
@@ -12,16 +10,13 @@ grade: stable
 apps:
   fablemaker:
     extensions: [gnome]
-    command: /Fablemaker_v32_Lin/Fablemaker_32.x86_64
+    command: Fablemaker_v32_Lin/Fablemaker_32.x86_64
+    desktop: com.endlessnetwork.fablemaker.desktop
+    common-id: com.endlessnetwork.fablemaker.desktop
     plugs:
       - audio-playback
-      - desktop
-      - desktop-legacy
       - joystick
       - network
-      - opengl
-      - wayland
-      - x11
 
 parts:
   fablemaker:
@@ -30,9 +25,14 @@ parts:
     override-prime: |
       craftctl default
       chmod +x $CRAFT_PRIME/Fablemaker_v32_Lin/Fablemaker_32.x86_64
-  desktop-files:
-    plugin: nil
-    source: desktop-file
-    override-build: |
+  fablemaker-source:
+    source: https://github.com/endless-network/Fablemaker_Binary/archive/refs/tags/v1.2.tar.gz
+    plugin: dump
+    parse-info: [com.endlessnetwork.fablemaker.appdata.xml]
+    override-pull: |
+      craftctl default
+      sed -i 's|Icon=com.endlessnetwork.fablemaker$|Icon=${SNAP}/meta/gui/icon.png|g' $CRAFT_PART_SRC/com.endlessnetwork.fablemaker.desktop
+      sed -i 's|Exec=com.endlessnetwork.fablemaker.sh$|Exec=fablemaker|g' $CRAFT_PART_SRC/com.endlessnetwork.fablemaker.desktop
+
       mkdir -p $CRAFT_PART_INSTALL/meta/gui
-      cp * $CRAFT_PART_INSTALL/meta/gui
+      cp FM_Favicon_128x128.png $CRAFT_PART_INSTALL/meta/gui/icon.png
